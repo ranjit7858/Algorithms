@@ -1,0 +1,60 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+vector<int> Z_algo(string s,int n){
+    vector<int> z(n); // n is basicall size of string whose z[] you wish to compute
+    // Step 1 
+    int l=0,r=0;
+    // Step 2 start to iterate over the z[i]; 
+    for(int i=1;i<n;i++){
+        //condition 1
+        /*
+        if i > r just update l = i and r = i .  We do so as there is no operating range as well as no matches so we just update them with a new range
+        */
+        if(i>r){
+            l=i;
+            r=i;
+            // iterating over the string for ensuring the matches of the ith char with the latest prefix character
+            while(r<n and s[r-l]==s[r]){
+                r++;
+            }
+            r--;
+            // len of matching substring to the prefix characters
+            z[i]=r-l+1;
+
+        }
+        //condition 2
+        else{
+            int j=i-l;
+
+            //condition 2a
+            /*
+            If i is l <= i <= r then we will be using the previous z[j] values such that j < i to obtain the no. of the character matching for the character in the range
+            And if found one ensure that to be z[j] < r-i+1; 
+            */
+            if(z[j]<r-i+1){
+                z[i]=z[j];
+            }
+            //condition 2b
+            // else just just update the range as usual by iterating over the string and redefining the range as we did above in line 17 
+            else{
+                l=i;
+                while(r<n and s[r-l]==s[r]){
+                    r++;
+                }
+                r--;
+                z[i]=r-l+1;
+            }
+        }
+    }
+    return z;
+}
+
+int main(){
+    string s="abc$abcdabcfabdabe";// it is combination of pattern + "$" + str to demostrate one of it's application to search use of it in searching a pattern in a string  
+    int n=s.size();
+    vector<int> z = Z_algo(s,n);
+    for(auto it : z) cout << it << " " ;
+    cout<<endl;
+    return 0;
+}
